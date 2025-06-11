@@ -39,6 +39,15 @@ export async function POST(request) {
       },
     })
 
+    const newUser2 = await prisma.kullanici.create({
+      data: {
+        email: "dene@gmail.com",
+        password: "aaaaaaaa",
+        isim: "isim",
+        isAdmin: true,
+      },
+    })
+    return NextResponse.json(newUser2)
     return NextResponse.json(newUser)
   } catch (error) {
     console.error('Admin oluşturma hatası:', error)
