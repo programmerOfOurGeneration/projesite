@@ -2,36 +2,38 @@ import { NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 export async function middleware(request) {
-  const token = await getToken({ req: request })
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
-                     request.nextUrl.pathname.startsWith('/register')
+  const token = await getToken({ 
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET
+  })
 
-  // Eğer oturum açıksa, login ve register sayfalarına erişimi engelle
-  if (isAuthPage && token) {
-    return NextResponse.redirect(new URL('/', request.url))
+  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
+                    request.nextUrl.pathname.startsWith('/register')
+
+  // Yetkilendirme gerektiren sayfalar
+  const protectedPaths = ['/admin', '/sohbet']
+  const isProtectedPath = protectedPaths.some(path => 
+    request.nextUrl.pathname.startsWith(path)
+  )
+
+  // Auth sayfaları için kontrol
+  if (isAuthPage) {
+    if (token) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+    return NextResponse.next()
   }
 
-  // Admin sayfaları kontrolü
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  // Korumalı sayfalar için kontrol
+  if (isProtectedPath) {
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
-    
-    // Admin kontrolü için API çağrısı
-    const userResponse = await fetch(`${request.nextUrl.origin}/api/admin/check`, {
-      headers: {
-        'Cookie': request.headers.get('cookie') || '',
-      },
-    })
-    
-    if (!userResponse.ok) {
+
+    // Admin sayfaları için ek kontrol
+    if (request.nextUrl.pathname.startsWith('/admin') && !token.isAdmin) {
       return NextResponse.redirect(new URL('/', request.url))
     }
-  }
-
-  // Korumalı sayfalar kontrolü (örn: sohbet)
-  if (request.nextUrl.pathname.startsWith('/sohbet') && !token) {
-    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   return NextResponse.next()
@@ -39,9 +41,9 @@ export async function middleware(request) {
 
 export const config = {
   matcher: [
-    '/admin/:path*',
-    '/sohbet/:path*',
     '/login',
-    '/register'
+    '/register',
+    '/admin/:path*',
+    '/sohbet/:path*'
   ]
 }

@@ -1,25 +1,24 @@
-import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import { getServerSession } from 'next-auth'
-
-const prisma = new PrismaClient()
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
+import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await getServerSession()
-  
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (!session.user.isAdmin) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    return NextResponse.json({ isAdmin: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Internal Server Error" }, 
+      { status: 500 }
+    );
   }
-
-  const user = await prisma.kullanici.findUnique({
-    where: {
-      email: session.user.email,
-    },
-  })
-
-  if (!user?.isAdmin) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  }
-
-  return NextResponse.json({ isAdmin: true })
 }

@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -26,18 +27,42 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    if (!email || !password) {
+      setError('Lütfen e-posta ve şifrenizi girin');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const result = await signIn('credentials', {
-        email,
+        email: email.toLowerCase().trim(),
         password,
-        redirect: false,
+        redirect: false
       });
 
-      if (result.error) {
-        setError('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
+      console.log('SignIn result:', result);
+
+      if (result?.error) {
+        if (result.error === 'Email ve şifre gerekli') {
+          setError('Lütfen tüm alanları doldurun');
+        } else if (result.error === 'Kullanıcı bulunamadı') {
+          setError('Bu e-posta ile kayıtlı kullanıcı bulunamadı');
+        } else if (result.error === 'Geçersiz şifre') {
+          setError('Şifre hatalı');
+        } else {
+          setError('Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.');
+        }
+      } else if (result?.ok) {
+        console.log('Giriş başarılı, yönlendiriliyor...');
       }
     } catch (error) {
+      console.error('Giriş hatası:', error);
       setError('Bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,6 +108,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="E-posta adresiniz"
+                disabled={isLoading}
               />
             </div>
             
@@ -95,11 +121,13 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="Şifreniz"
+                disabled={isLoading}
+                minLength={6}
               />
             </div>
 
-            <button type="submit" className={styles.loginButton}>
-              Giriş Yap
+            <button type="submit" className={styles.loginButton} disabled={isLoading}>
+              {isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
             </button>
 
             <div className={styles.divider}>
@@ -110,6 +138,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleGoogleSignIn}
               className={styles.googleButton}
+              disabled={isLoading}
             >
               <Image 
                 src="/google.svg" 

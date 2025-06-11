@@ -1,13 +1,13 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { getServerSession } from "next-auth";
-import Provider from "./components/Provider";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import Provider from "./components/Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "StageDesign - Sahne Tasarım ve Teknik Prodüksiyon",
+  title: "Onpases - Sahne Tasarım ve Teknik Prodüksiyon",
   description: "Profesyonel sahne tasarımı ve teknik prodüksiyon hizmetleri",
 };
 
