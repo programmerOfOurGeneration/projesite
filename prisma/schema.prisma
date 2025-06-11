@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Mesaj {
+  id         Int      @id @default(autoincrement())
+  icerik     String
+  kullanici  Kullanici @relation(fields: [kullaniciId], references: [id])
+  kullaniciId Int
+  createdAt  DateTime @default(now())
+}
+
+model Etkinlik {
+  id          Int      @id @default(autoincrement())
+  baslik      String
+  aciklama    String
+  icerik      String
+  tarih       DateTime
+  konum       String?
+  resimUrl    String?
+  resimler    EtkinlikResim[]
+  videolar    EtkinlikVideo[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model EtkinlikResim {
+  id          Int       @id @default(autoincrement())
+  url         String
+  aciklama    String?
+  etkinlik    Etkinlik  @relation(fields: [etkinlikId], references: [id], onDelete: Cascade)
+  etkinlikId  Int
+  createdAt   DateTime  @default(now())
+}
+
+model EtkinlikVideo {
+  id          Int       @id @default(autoincrement())
+  url         String
+  aciklama    String?
+  etkinlik    Etkinlik  @relation(fields: [etkinlikId], references: [id], onDelete: Cascade)
+  etkinlikId  Int
+  createdAt   DateTime  @default(now())
+}
+
+model AnaSayfaIcerik {
+  id            Int      @id @default(autoincrement())
+  heroBaslik    String
+  heroAltBaslik String
+  servisler     Servis[]
+  istatistikler Istatistik[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Servis {
+  id            Int            @id @default(autoincrement())
+  baslik        String
+  aciklama      String
+  ikonUrl       String
+  anaSayfa      AnaSayfaIcerik @relation(fields: [anaSayfaId], references: [id])
+  anaSayfaId    Int
+}
+
+model Istatistik {
+  id            Int            @id @default(autoincrement())
+  rakam         String
+  aciklama      String
+  anaSayfa      AnaSayfaIcerik @relation(fields: [anaSayfaId], references: [id])
+  anaSayfaId    Int
+}
+
+model IletisimBilgileri {
+  id              Int      @id @default(autoincrement())
+  firmaAdi        String
+  hakkimizda     String   
+  adres          String
+  telefon        String
+  email          String
+  calismaSaatleri String
+  sosyalMedya    Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model OzelMesaj {
+  id          Int      @id @default(autoincrement())
+  icerik      String
+  gonderen    Kullanici @relation("GonderilenMesajlar", fields: [gonderenId], references: [id])
+  gonderenId  Int
+  alici       Kullanici @relation("AlinanMesajlar", fields: [aliciId], references: [id])
+  aliciId     Int
+  okundu      Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+}
+
+model SohbetGrubu {
+  id          Int       @id @default(autoincrement())
+  isim        String
+  aciklama    String?
+  olusturan   Kullanici @relation("OlusturanGruplar", fields: [olusturanId], references: [id])
+  olusturanId Int
+  uyeler      GrupUyelik[]
+  mesajlar    GrupMesaj[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model GrupUyelik {
+  id        Int         @id @default(autoincrement())
+  grup      SohbetGrubu @relation(fields: [grupId], references: [id])
+  grupId    Int
+  uye       Kullanici   @relation(fields: [uyeId], references: [id])
+  uyeId     Int
+  createdAt DateTime    @default(now())
+
+  @@unique([grupId, uyeId])
+}
+
+model GrupMesaj {
+  id        Int         @id @default(autoincrement())
+  icerik    String
+  grup      SohbetGrubu @relation(fields: [grupId], references: [id])
+  grupId    Int
+  gonderen  Kullanici   @relation(fields: [gonderenId], references: [id])
+  gonderenId Int
+  createdAt DateTime    @default(now())
+}
+
+model Kullanici {
+  id                Int         @id @default(autoincrement())
+  email             String      @unique
+  isim              String?
+  resim             String?
+  mesajlar          Mesaj[]
+  gonderdigiMesajlar OzelMesaj[] @relation("GonderilenMesajlar")
+  aldigiMesajlar    OzelMesaj[] @relation("AlinanMesajlar")
+  isAdmin           Boolean     @default(false)
+  password          String?   // Admin girişi için şifre eklendi
+  createdAt         DateTime    @default(now())
+  olusturduguGruplar SohbetGrubu[] @relation("OlusturanGruplar")
+  grupUyelikleri     GrupUyelik[]
+  grupMesajlari      GrupMesaj[]
+}
