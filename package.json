@@ -1,7 +1,8 @@
 {
   "name": "projesite",
   "version": "0.1.0",
-  "private": true,  "scripts": {
+  "private": true,
+  "type": "module","scripts": {
     "dev": "next dev",
     "build": "npx prisma generate && npx prisma db push && next build",
     "start": "next start",
