@@ -88,7 +88,7 @@ export default function RegisterPage() {
             height={100} 
             className={styles.logo}
           />
-          <h2>StageDesign</h2>
+          <h2>Onpases</h2>
           <p>Üyelik Oluştur</p>
         </div>
         
