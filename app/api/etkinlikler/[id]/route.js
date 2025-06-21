@@ -6,10 +6,20 @@ const prisma = new PrismaClient();
 
 export async function GET(request, { params }) {
   try {
-    const id = parseInt(params.id);
+    // Params ve params.id kontrolü
+    if (!params) {
+      return NextResponse.json({ error: 'Params objesi eksik' }, { status: 400 });
+    }
+    
+    if (!params.id) {
+      return NextResponse.json({ error: 'ID parametresi eksik' }, { status: 400 });
+    }
+
+    const idStr = params.id;
+    const id = parseInt(idStr);
     
     if (isNaN(id)) {
-      return NextResponse.json({ error: 'Geçersiz ID' }, { status: 400 });
+      return NextResponse.json({ error: 'Geçersiz ID: ' + idStr }, { status: 400 });
     }
 
     const etkinlik = await prisma.etkinlik.findUnique({
@@ -47,8 +57,12 @@ export async function PUT(request, { params }) {
   if (!user?.isAdmin) {
     return NextResponse.json({ error: 'Admin yetkisi gerekli' }, { status: 403 });
   }
-
   try {
+    // Params kontrolü
+    if (!params || !params.id) {
+      return NextResponse.json({ error: 'ID parametresi eksik' }, { status: 400 });
+    }
+
     const id = parseInt(params.id);
     
     if (isNaN(id)) {
@@ -112,8 +126,12 @@ export async function DELETE(request, { params }) {
   if (!user?.isAdmin) {
     return NextResponse.json({ error: 'Admin yetkisi gerekli' }, { status: 403 });
   }
-
   try {
+    // Params kontrolü
+    if (!params || !params.id) {
+      return NextResponse.json({ error: 'ID parametresi eksik' }, { status: 400 });
+    }
+
     const id = parseInt(params.id);
     
     if (isNaN(id)) {

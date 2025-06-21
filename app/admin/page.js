@@ -142,13 +142,17 @@ export default function AdminPanel() {
   return (
     <div className={styles.container}>
       <h1>Admin Panel</h1>
-      
-      <div className={styles.adminMenu}>
+        <div className={styles.adminMenu}>
         <h2>Yönetim Menüsü</h2>
         <button 
           className={styles.menuButton}
           onClick={() => router.push('/admin/etkinlikler')}>
           Etkinlikleri Yönet
+        </button>
+        <button 
+          className={styles.menuButton}
+          onClick={() => router.push('/admin/envanter')}>
+          Envanter Yönetimi
         </button>
         <button 
           className={styles.menuButton}

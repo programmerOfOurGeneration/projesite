@@ -6,13 +6,8 @@
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
 
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
-  min-height: 100svh;
-  padding: 80px;
-  gap: 64px;
+  width: 100%;
+  min-height: 100vh;
   font-family: var(--font-geist-sans);
 }
 
@@ -28,11 +23,14 @@
 }
 
 .main {
+  width: 100%;
   min-height: 100vh;
   background: #fff;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+  padding: 0;
+  margin: 0;
+  padding-top: 80px; /* Navigation bar yüksekliği için */
 }
 
 .main ol {
@@ -206,14 +204,38 @@ a.secondary {
 }
 
 .hero {
-  height: 100vh;
+  height: calc(100vh - 80px); /* Navigation bar yüksekliğini çıkar */
   position: relative;
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.sliderContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('/stage-hero.jpg') center/cover no-repeat;
   color: #fff;
   text-align: center;
+}
+
+.slide.active {
+  opacity: 1;
 }
 
 .heroOverlay {
@@ -231,6 +253,93 @@ a.secondary {
   z-index: 2;
   max-width: 800px;
   padding: 2rem;
+}
+
+.projectDetails {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.projectDate,
+.projectLocation {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.heroActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.sliderControls {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 3;
+}
+
+.sliderBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.sliderBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
+}
+
+.sliderDots {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 3;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot.activeDot {
+  background: white;
+  border-color: white;
+}
+
+.dot:hover {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .hero h1 {
@@ -251,14 +360,204 @@ a.secondary {
   background: #0070f3;
   color: #fff;
   padding: 1rem 2rem;
-  border-radius: 5px;
+  border-radius: 50px;
   text-decoration: none;
-  font-weight: 500;
-  transition: background 0.3s;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 112, 243, 0.3);
 }
 
 .cta:hover {
   background: #0051a2;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 112, 243, 0.4);
+}
+
+.ctaSecondary {
+  display: inline-block;
+  background: transparent;
+  color: #fff;
+  padding: 1rem 2rem;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.ctaSecondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+  transform: translateY(-2px);
+}
+
+.projects {
+  padding: 6rem 2rem;
+  background: #fff;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.projects h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+.sectionSubtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.projectGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.projectCard {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  position: relative;
+}
+
+.projectCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 112, 243, 0.05), rgba(118, 75, 162, 0.05));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.projectCard:hover::before {
+  opacity: 1;
+}
+
+.projectCard:hover {
+  transform: translateY(-15px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.projectImage {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+}
+
+.projectImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.projectCard:hover .projectImg {
+  transform: scale(1.05);
+}
+
+.noImage {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.projectInfo {
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.projectInfo h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+}
+
+.projectCard:hover .projectInfo h3 {
+  color: #0070f3;
+}
+
+.projectInfo p {
+  color: #666;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.projectMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 2px solid #f0f0f0;
+  font-size: 0.9rem;
+}
+
+.projectDate {
+  color: #0070f3;
+  font-weight: 600;
+  background: rgba(0, 112, 243, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+}
+
+.projectLocation {
+  color: #888;
+  font-weight: 500;
+}
+
+.projectsFooter {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.viewAllProjects {
+  display: inline-block;
+  background: linear-gradient(135deg, #0070f3 0%, #0051a2 100%);
+  color: white;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 112, 243, 0.3);
+}
+
+.viewAllProjects:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 112, 243, 0.4);
+  background: linear-gradient(135deg, #0051a2 0%, #003d82 100%);
 }
 
 .services {
@@ -487,13 +786,151 @@ a.secondary {
   }
 }
 
+/* Loading States */
+.loadingGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loadingCard {
+  background: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+.loadingSkeleton {
+  width: 100%;
+  height: 250px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+.loadingContent {
+  padding: 1.5rem;
+}
+
+.loadingTitle {
+  height: 20px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.loadingText {
+  height: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.loadingText:last-child {
+  width: 70%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* No Projects State */
+.noProjects {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+}
+
+.noProjects h3 {
+  font-size: 1.5rem;
+  margin: 1rem 0;
+  color: #1a1a1a;
+}
+
+.noProjects p {
+  font-size: 1rem;
+  color: #888;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
+  .main {
+    padding-top: 70px; /* Mobilde daha az padding */
+  }
+  
+  .hero {
+    height: calc(100vh - 70px); /* Mobilde navigation bar yüksekliğini çıkar */
+  }
+  
   .hero h1 {
-    font-size: 3rem;
+    font-size: 2.5rem;
   }
   
   .hero p {
+    font-size: 1.1rem;
+  }
+  
+  .sliderControls {
+    padding: 0 1rem;
+  }
+  
+  .sliderBtn {
+    width: 40px;
+    height: 40px;
     font-size: 1.2rem;
+  }
+  
+  .projectDetails {
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .projectDate,
+  .projectLocation {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .heroActions {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .cta,
+  .ctaSecondary {
+    padding: 0.8rem 1.5rem;
+    width: 200px;
+    text-align: center;
+  }
+  
+  .projectGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .projectCard {
+    margin: 0 1rem;
+  }
+  
+  .projects {
+    padding: 4rem 1rem;
+  }
+  
+  .projects h2 {
+    font-size: 2rem;
   }
   
   .nav {
@@ -502,5 +939,48 @@ a.secondary {
   
   .navLinks {
     gap: 1rem;
+  }
+  
+  .authButtons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding-top: 60px; /* Çok küçük ekranlarda daha az padding */
+  }
+  
+  .hero {
+    height: calc(100vh - 60px);
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+  }
+  
+  .heroContent {
+    padding: 1rem;
+  }
+  
+  .projectDetails {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .projectInfo {
+    padding: 1rem;
+  }
+  
+  .projectMeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }

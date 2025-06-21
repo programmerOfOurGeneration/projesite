@@ -11,7 +11,21 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Yetkilendirme gerekli' }, { status: 401 });
     }
 
-    const kullaniciId = parseInt(params.id);
+    // Params ve params.id kontrolü
+    if (!params) {
+      return NextResponse.json({ error: 'Params objesi eksik' }, { status: 400 });
+    }
+    
+    if (!params.id) {
+      return NextResponse.json({ error: 'ID parametresi eksik' }, { status: 400 });
+    }
+
+    const kullaniciIdStr = params.id;
+    const kullaniciId = parseInt(kullaniciIdStr);
+    
+    if (isNaN(kullaniciId)) {
+      return NextResponse.json({ error: 'Geçersiz kullanıcı ID: ' + kullaniciIdStr }, { status: 400 });
+    }
     
     // Mevcut kullanıcıyı bul
     const currentUser = await prisma.kullanici.findUnique({

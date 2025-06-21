@@ -1,154 +1,350 @@
+/* Progress Bar */
+.progressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 1002;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.1s ease;
+}
+
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 3rem 2rem;
+  background: #f8fafc;
+  min-height: 100vh;
 }
 
 .breadcrumb {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  padding: 1rem 0;
 }
 
 .breadcrumb a {
-  color: #4a5568;
+  color: #667eea;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  font-size: 0.95rem;
-  transition: color 0.2s;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
 
 .breadcrumb a:hover {
-  color: #2d3748;
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.3);
+  transform: translateX(-5px);
 }
 
 .blogPost {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .header {
-  padding: 2rem 2rem 1.5rem;
+  padding: 3rem 3rem 2rem;
   text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  position: relative;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  opacity: 0.3;
 }
 
 .meta {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  color: #718096;
-  font-size: 0.95rem;
-  margin-bottom: 1.5rem;
+  gap: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.meta time,
+.location,
+.readingTime {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-weight: 500;
+}
+
+.readingTime {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .location {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .icon {
   width: 1.2em;
   height: 1.2em;
+  opacity: 0.9;
 }
 
 .title {
-  font-size: 2.5rem;
-  color: #1a202c;
+  font-size: 3rem;
+  color: white;
   line-height: 1.2;
   margin: 0;
-  font-weight: 700;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 2;
 }
 
 .featuredImage {
   width: 100%;
   height: auto;
   position: relative;
+  overflow: hidden;
 }
 
 .mainImage {
   width: 100%;
   height: auto;
   object-fit: cover;
-  max-height: 600px;
+  max-height: 500px;
+  transition: transform 0.3s ease;
+}
+
+.featuredImage:hover .mainImage {
+  transform: scale(1.05);
 }
 
 .content {
-  padding: 2rem;
+  padding: 3rem;
+  background: white;
 }
 
 .summary {
-  font-size: 1.25rem;
-  line-height: 1.7;
+  font-size: 1.3rem;
+  line-height: 1.8;
   color: #4a5568;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: #f8fafc;
-  border-radius: 8px;
-  border-left: 4px solid #3182ce;
+  margin-bottom: 3rem;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 15px;
+  border-left: 5px solid #667eea;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.summary::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  font-size: 4rem;
+  color: #667eea;
+  font-family: serif;
+  opacity: 0.3;
 }
 
 .description {
-  font-size: 1.1rem;
-  line-height: 1.8;
+  font-size: 1.15rem;
+  line-height: 1.9;
   color: #2d3748;
+}
+
+/* Sosyal Paylaşım */
+.socialShare {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 15px;
+  text-align: center;
+}
+
+.socialShare h3 {
+  font-size: 1.3rem;
+  color: #1a202c;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.shareButtons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.shareBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: white;
+}
+
+.shareBtn:first-child {
+  background: linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%);
+}
+
+.shareBtn:nth-child(2) {
+  background: linear-gradient(135deg, #4267B2 0%, #365899 100%);
+}
+
+.shareBtn:last-child {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+}
+
+.shareBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.shareBtn svg {
+  width: 18px;
+  height: 18px;
 }
 
 .description p {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: justify;
 }
 
 .description h2 {
-  font-size: 1.75rem;
-  margin: 2rem 0 1rem;
+  font-size: 2rem;
+  margin: 3rem 0 1.5rem;
   color: #1a202c;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #667eea;
+  position: relative;
+}
+
+.description h2::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: #764ba2;
 }
 
 .description ul, .description ol {
-  margin: 1.5rem 0;
-  padding-left: 1.5rem;
+  margin: 2rem 0;
+  padding-left: 2rem;
 }
 
 .description li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.description ul li::before {
+  content: '▶';
+  color: #667eea;
+  position: absolute;
+  left: -1.5rem;
 }
 
 .gallery, .videoSection {
-  padding: 2rem;
-  background: #f8fafc;
-  margin-top: 2rem;
+  padding: 3rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  margin-top: 3rem;
+  border-radius: 20px;
+  position: relative;
+}
+
+.gallery::before, .videoSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23667eea' fill-opacity='0.05'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+  opacity: 0.3;
+  z-index: 1;
 }
 
 .gallery h2, .videoSection h2 {
-  font-size: 1.75rem;
-  color: #2d3748;
-  margin-bottom: 1.5rem;
+  font-size: 2.25rem;
+  color: #1a202c;
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  font-weight: 700;
 }
 
 .imageGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
 }
 
 .imageItem {
   position: relative;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 15px;
   overflow: hidden;
-  transition: transform 0.2s;
+  transition: all 0.4s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: white;
 }
 
 .imageItem:hover {
-  transform: scale(1.02);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
 }
 
 .galleryImage {
   width: 100%;
-  height: 100%;
+  height: 250px;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.imageItem:hover .galleryImage {
+  transform: scale(1.1);
 }
 
 .imageCaption {
@@ -156,23 +352,38 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
   color: white;
-  padding: 0.75rem;
-  font-size: 0.9rem;
+  padding: 1.5rem 1rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.imageItem:hover .imageCaption {
+  transform: translateY(0);
 }
 
 .videoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
 }
 
 .videoItem {
-  border-radius: 8px;
+  border-radius: 15px;
   overflow: hidden;
   background: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.videoItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
 }
 
 .video {
@@ -182,9 +393,10 @@
 }
 
 .videoCaption {
-  padding: 1rem;
+  padding: 1.5rem;
   color: #4a5568;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  background: #f8fafc;
 }
 
 .lightbox {
@@ -193,70 +405,165 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .closeButton {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
+  top: 2rem;
+  right: 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   color: white;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
   z-index: 1001;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
 }
 
 .lightboxImage {
   max-width: 90vw;
   max-height: 90vh;
   object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .lightboxCaption {
   position: absolute;
-  bottom: 2rem;
+  bottom: 3rem;
   left: 0;
   right: 0;
   text-align: center;
   color: white;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 1.5rem 2rem;
+  font-size: 1.1rem;
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  margin: 0 2rem;
 }
 
 .loadingContainer {
-  min-height: 50vh;
+  min-height: 70vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #f8fafc;
 }
 
 .loader {
-  color: #718096;
-  font-size: 1.1rem;
+  color: #667eea;
+  font-size: 1.3rem;
+  font-weight: 500;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+    padding: 2rem 1rem;
   }
 
   .header {
-    padding: 1.5rem 1rem;
+    padding: 2.5rem 2rem 2rem;
   }
 
   .title {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   .meta {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .content {
+    padding: 2rem 1.5rem;
+  }
+
+  .summary {
+    font-size: 1.15rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .description {
+    font-size: 1.05rem;
+  }
+
+  .description h2 {
+    font-size: 1.7rem;
+  }
+
+  .imageGrid, .videoGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .gallery, .videoSection {
+    padding: 2rem 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .gallery h2, .videoSection h2 {
+    font-size: 1.8rem;
+  }
+
+  .closeButton {
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .lightboxCaption {
+    bottom: 1rem;
+    margin: 0 1rem;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+
+  .header {
+    padding: 2rem 1rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
   }
 
   .content {
@@ -264,15 +571,20 @@
   }
 
   .summary {
-    font-size: 1.1rem;
-    padding: 1rem;
+    font-size: 1.05rem;
+    padding: 1.5rem 1rem;
   }
 
-  .imageGrid, .videoGrid {
-    grid-template-columns: 1fr;
+  .description {
+    font-size: 1rem;
   }
 
   .gallery, .videoSection {
     padding: 1.5rem 1rem;
+  }
+
+  .breadcrumb a {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
   }
 }

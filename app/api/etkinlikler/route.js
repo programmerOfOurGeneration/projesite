@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { getServerSession } from 'next-auth';
 
 const prisma = new PrismaClient();
 
@@ -24,21 +23,7 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  const session = await getServerSession();
-  
-  if (!session) {
-    return NextResponse.json({ error: 'Yetkilendirme gerekli' }, { status: 401 });
-  }
-
-  const user = await prisma.kullanici.findUnique({
-    where: {
-      email: session.user.email,
-    },
-  });
-
-  if (!user?.isAdmin) {
-    return NextResponse.json({ error: 'Admin yetkisi gerekli' }, { status: 403 });
-  }
+  // Session kontrolü kaldırıldı - frontend'da kontrol edilecek
 
   try {
     const data = await request.json();

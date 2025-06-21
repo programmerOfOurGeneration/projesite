@@ -1,7 +1,5 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 import Provider from "./components/Provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -11,13 +9,11 @@ export const metadata = {
   description: "Profesyonel sahne tasarımı ve teknik prodüksiyon hizmetleri",
 };
 
-export default async function RootLayout({ children }) {
-  const session = await getServerSession(authOptions);
-  
+export default function RootLayout({ children }) {
   return (
     <html lang="tr">
       <body className={inter.className}>
-        <Provider session={session}>{children}</Provider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

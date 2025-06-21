@@ -12,7 +12,16 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: 'Yetkilendirme gerekli' }, { status: 401 });
     }
 
+    // Params kontrolü
+    if (!params || !params.id) {
+      return NextResponse.json({ error: 'ID parametresi eksik' }, { status: 400 });
+    }
+
     const grupId = parseInt(params.id);
+    
+    if (isNaN(grupId)) {
+      return NextResponse.json({ error: 'Geçersiz grup ID' }, { status: 400 });
+    }
     const kullanici = await prisma.kullanici.findUnique({
       where: { email: session.user.email }
     });
@@ -83,7 +92,16 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Yetkilendirme gerekli' }, { status: 401 });
     }
 
+    // Params kontrolü
+    if (!params || !params.id) {
+      return NextResponse.json({ error: 'ID parametresi eksik' }, { status: 400 });
+    }
+
     const grupId = parseInt(params.id);
+    
+    if (isNaN(grupId)) {
+      return NextResponse.json({ error: 'Geçersiz grup ID' }, { status: 400 });
+    }
     const { icerik } = await request.json();
     const kullanici = await prisma.kullanici.findUnique({
       where: { email: session.user.email }
@@ -131,13 +149,20 @@ export async function PUT(request, { params }) {
 
     const kullanici = await prisma.kullanici.findUnique({
       where: { email: session.user.email }
-    });
-
-    if (!kullanici.isAdmin) {
+    });    if (!kullanici.isAdmin) {
       return NextResponse.json({ error: 'Sadece adminler grup üyelerini güncelleyebilir' }, { status: 403 });
     }
 
+    // Params kontrolü
+    if (!params || !params.id) {
+      return NextResponse.json({ error: 'ID parametresi eksik' }, { status: 400 });
+    }
+
     const grupId = parseInt(params.id);
+    
+    if (isNaN(grupId)) {
+      return NextResponse.json({ error: 'Geçersiz grup ID' }, { status: 400 });
+    }
     const { uyeIdleri } = await request.json();
 
     // Önce tüm mevcut üyelikleri sil

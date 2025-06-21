@@ -2,15 +2,25 @@ import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
-const prisma = new PrismaClient()
+const globalForPrisma = globalThis
+const prisma = globalForPrisma.prisma ?? new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL
+    }
+  }
+})
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma
+}
 
 export async function POST(request) {
   try {
-    const { email, password, name } = await request.json()
-
-    // Email kontrolü
+    const { email, password, name } = await request.json()    // Email kontrolü
     const existingUser = await prisma.kullanici.findUnique({
-      where: { email }
+      where: { email },
+      select: { id: true, email: true }
     })
 
     if (existingUser) {
