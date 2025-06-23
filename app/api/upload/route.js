@@ -1,6 +1,5 @@
-import { writeFile } from 'fs/promises';
 import { NextResponse } from 'next/server';
-import path from 'path';
+import cloudinary from '../../../lib/cloudinary';
 
 export async function POST(request) {
     try {
@@ -14,24 +13,31 @@ export async function POST(request) {
             );
         }
 
+        // Dosyayı buffer'a çevir
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Generate unique filename
-        const fileExt = path.extname(file.name);
-        const fileName = `${Date.now()}${fileExt}`;
-        
-        // Save file to public directory
-        const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
-        await writeFile(filePath, buffer);
-        
+        // Cloudinary'ye yükle
+        const result = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+                {
+                    resource_type: "auto",
+                    folder: "projesite", // Cloudinary'de klasör adı
+                },
+                (error, result) => {
+                    if (error) reject(error);
+                    else resolve(result);
+                }
+            ).end(buffer);
+        });
+
         return NextResponse.json({ 
             success: true,
-            fileName: fileName,
-            url: `/uploads/${fileName}`
+            fileName: result.public_id,
+            url: result.secure_url
         });
     } catch (error) {
-        console.error('Error uploading file:', error);
+        console.error('Error uploading file to Cloudinary:', error);
         return NextResponse.json(
             { error: "Error uploading file" },
             { status: 500 }

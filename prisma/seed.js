@@ -37,46 +37,41 @@ async function main() {
     });    console.log('Test kullanıcısı oluşturuldu:', user);
 
     // Örnek etkinlikler oluştur
-    const etkinlikler = [
-      {
+    const etkinlikler = [      {
         baslik: 'Yıldızlar Altında Konser',
         aciklama: 'Açık hava konser alanında gerçekleştirilen büyülü bir müzik gecesi',
         icerik: 'Bu özel konser etkinliğinde, en sevilen sanatçılar sahne aldı. Modern sahne tasarımı ve profesyonel ses sistemi ile unutulmaz bir gece yaşandı.',
         tarih: new Date('2024-07-15'),
         konum: 'İstanbul Açık Hava Tiyatrosu',
-        resimUrl: '/stage-hero.jpg'
-      },
-      {
+        resimUrl: 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=1200&h=600&fit=crop'
+      },      {
         baslik: 'Tiyatro Festivali 2024',
         aciklama: 'Ülkemizin en prestijli tiyatro festivali',
         icerik: 'Üç gün süren festival boyunca, yerli ve yabancı tiyatro toplulukları sahne aldı. Özel sahne tasarımları ve ışık oyunları ile büyüleyici performanslar sergilendi.',
         tarih: new Date('2024-06-20'),
         konum: 'Ankara Devlet Tiyatrosu',
-        resimUrl: '/stage-hero.jpg'
-      },
-      {
+        resimUrl: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&h=600&fit=crop'
+      },      {
         baslik: 'Kurumsal Lansman Etkinliği',
         aciklama: 'Teknoloji şirketi için özel ürün lansmanı',
         icerik: 'Interaktif sahne tasarımı ve LED ekranlar kullanılarak gerçekleştirilen modern lansman etkinliği. Hologram teknolojisi ile etkileyici sunum yapıldı.',
         tarih: new Date('2024-05-10'),
         konum: 'İstanbul Kongre Merkezi',
-        resimUrl: '/stage-hero.jpg'
-      },
-      {
+        resimUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&h=600&fit=crop'
+      },      {
         baslik: 'Müze Gecesi Özel Etkinliği',
         aciklama: 'Tarihi müzede gerçekleştirilen kültür-sanat gecesi',
         icerik: 'Tarihi atmosfere uygun özel ışık tasarımı ve ses sistemi ile müze koleksiyonları eşliğinde sanatsal performanslar sergilendi.',
         tarih: new Date('2024-04-25'),
         konum: 'İstanbul Arkeoloji Müzesi',
-        resimUrl: '/stage-hero.jpg'
-      },
-      {
+        resimUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&h=600&fit=crop'
+      },      {
         baslik: 'Fashion Week Defile',
         aciklama: 'Moda haftası ana defile etkinliği',
         icerik: 'Podium tasarımı, özel ışık efektleri ve ses sistemi ile moda dünyasının en önemli etkinliklerinden biri gerçekleştirildi.',
         tarih: new Date('2024-03-18'),
         konum: 'İstanbul Fuar Merkezi',
-        resimUrl: '/stage-hero.jpg'
+        resimUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&h=600&fit=crop'
       }
     ];
 
@@ -96,9 +91,8 @@ async function main() {
         quantity: 12,
         available: 8,
         condition: 'excellent',
-        price: 15000,
-        description: 'Yüksek kaliteli LED panel ışık sistemi. 1000W güç kapasitesi ile geniş alan aydınlatması sağlar.',
-        image: '/light.svg',
+        price: 15000,        description: 'Yüksek kaliteli LED panel ışık sistemi. 1000W güç kapasitesi ile geniş alan aydınlatması sağlar.',
+        image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
         lastUsed: new Date('2024-06-15'),
         location: 'Depo A - Raf 3',
         serialNumber: 'LED-001-012',
@@ -111,9 +105,8 @@ async function main() {
         quantity: 20,
         available: 15,
         condition: 'good',
-        price: 8000,
-        description: 'Profesyonel kablosuz mikrofon sistemi. UHF frekans bandında çalışır.',
-        image: '/sound.svg',
+        price: 8000,        description: 'Profesyonel kablosuz mikrofon sistemi. UHF frekans bandında çalışır.',
+        image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
         lastUsed: new Date('2024-06-10'),
         location: 'Depo B - Dolap 1',
         serialNumber: 'MIC-002-020',
@@ -126,9 +119,8 @@ async function main() {
         quantity: 25,
         available: 20,
         condition: 'excellent',
-        price: 5500,
-        description: 'Ayarlanabilir sahne reflektörü. Spot ve flood ayarları mevcut.',
-        image: '/light.svg',
+        price: 5500,        description: 'Ayarlanabilir sahne reflektörü. Spot ve flood ayarları mevcut.',
+        image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
         lastUsed: new Date('2024-06-12'),
         location: 'Depo A - Raf 1',
         serialNumber: 'REF-003-025',
@@ -141,9 +133,8 @@ async function main() {
         quantity: 8,
         available: 6,
         condition: 'good',
-        price: 25000,
-        description: 'Güçlü PA ses sistemi. Geniş etkinlikler için ideal.',
-        image: '/sound.svg',
+        price: 25000,        description: 'Güçlü PA ses sistemi. Geniş etkinlikler için ideal.',
+        image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
         lastUsed: new Date('2024-06-08'),
         location: 'Depo C - Alan 1',
         serialNumber: 'PA-004-008',
@@ -156,9 +147,8 @@ async function main() {
         quantity: 6,
         available: 4,
         condition: 'excellent',
-        price: 45000,
-        description: '4K video kayıt kamerası. Profesyonel etkinlik çekimleri için.',
-        image: '/stage.svg',
+        price: 45000,        description: '4K video kayıt kamerası. Profesyonel etkinlik çekimleri için.',
+        image: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=400&h=300&fit=crop',
         lastUsed: new Date('2024-06-14'),
         location: 'Güvenlik Dolabı',
         serialNumber: 'CAM-005-006',
