@@ -145,8 +145,7 @@ export default function Home() {
             <Link href="/">Ana Sayfa</Link>
             <Link href="/etkinlikler">Projelerimiz</Link>
             <Link href="/envanter">Envanter</Link>
-            <Link href="/iletisim">İletişim</Link>
-            {status === 'loading' ? (
+            <Link href="/iletisim">İletişim</Link>            {status === 'loading' ? (
               <div className={styles.loadingDot}></div>
             ) : session?.user ? (
               <>
@@ -155,22 +154,14 @@ export default function Home() {
                     Admin Panel
                   </Link>
                 )}
-                <Link href="/sohbet" className={styles.accountLink}>
-                  Sohbet
-                </Link>
                 <button onClick={handleSignOut} className={styles.signOutButton}>
                   Çıkış Yap
                 </button>
               </>
             ) : (
-              <div className={styles.authButtons}>
-                <Link href="/login" className={styles.loginLink}>
-                  Giriş Yap
-                </Link>
-                <Link href="/register" className={styles.registerLink}>
-                  Kayıt Ol
-                </Link>
-              </div>
+              <Link href="/admin/login" className={styles.adminLoginLink}>
+                Admin Giriş
+              </Link>
             )}
           </div>
         </nav>        <section className={styles.hero}>
@@ -367,10 +358,10 @@ export default function Home() {
               <p>{istatistik.aciklama}</p>
             </div>
           ))}
-        </section>          <section className={styles.contact}>
+        </section>        <section className={styles.contact}>
           <h2>Vizyonunuzu Gerçeğe Dönüştürelim</h2>
           <p>Projeniz için profesyonel çözümler sunalım</p>
-          <Link href="/login" className={styles.ctaSecondary}>
+          <Link href="/iletisim" className={styles.ctaSecondary}>
             Bizimle İletişime Geçin
           </Link>
         </section>

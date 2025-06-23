@@ -6,9 +6,8 @@ import styles from './page.module.css';
 import Image from 'next/image';
 
 export default function EtkinliklerAdmin() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [etkinlik, setEtkinlik] = useState({
+  const { data: session, status } = useSession();  const router = useRouter();
+    const [etkinlik, setEtkinlik] = useState({
     baslik: '',
     aciklama: '',
     icerik: '',
@@ -23,6 +22,8 @@ export default function EtkinliklerAdmin() {
   const [etkinlikler, setEtkinlikler] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [formSubmitting, setFormSubmitting] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -39,21 +40,30 @@ export default function EtkinliklerAdmin() {
         console.error('Etkinlikler yüklenemedi:', error);
         setError('Etkinlikler yüklenemedi');
       }
-    };
-
-    fetchEtkinlikler();
+    };    fetchEtkinlikler();
   }, [status, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setError('');
+    setFormSubmitting(true);
 
-    try {
-      const formData = new FormData();
-      Object.keys(etkinlik).forEach(key => {
-        formData.append(key, etkinlik[key]);
-      });
+    try {// URL'leri temizle ve kontrol et
+      const cleanedEtkinlik = {
+        ...etkinlik,
+        resimUrl: etkinlik.resimUrl ? etkinlik.resimUrl.trim() : ''
+      };
+
+      const cleanedResimler = resimler.map(resim => ({
+        ...resim,
+        url: resim.url ? resim.url.trim() : ''
+      })).filter(resim => resim.url); // Boş URL'leri filtrele
+
+      const cleanedVideolar = videolar.map(video => ({
+        ...video,
+        url: video.url ? video.url.trim() : ''
+      })).filter(video => video.url); // Boş URL'leri filtrele
 
       const method = editMode ? 'PUT' : 'POST';
       const url = editMode ? `/api/etkinlikler/${editId}` : '/api/etkinlikler';
@@ -64,9 +74,9 @@ export default function EtkinliklerAdmin() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...etkinlik,
-          resimler,
-          videolar
+          ...cleanedEtkinlik,
+          resimler: cleanedResimler,
+          videolar: cleanedVideolar
         }),
       });
 
@@ -92,10 +102,11 @@ export default function EtkinliklerAdmin() {
       } else {
         const data = await response.json();
         setError(data.error || 'Bir hata oluştu');
-      }
-    } catch (error) {
+      }    } catch (error) {
       console.error('İşlem hatası:', error);
       setError('İşlem sırasında bir hata oluştu');
+    } finally {
+      setFormSubmitting(false);
     }
   };
 
@@ -162,9 +173,9 @@ export default function EtkinliklerAdmin() {
   const removeVideo = (index) => {
     setVideolar(videolar.filter((_, i) => i !== index));
   };
-
   const handleFileUpload = async (file, type) => {
     try {
+      setUploading(true);
       const formData = new FormData();
       formData.append('file', file);
 
@@ -175,27 +186,35 @@ export default function EtkinliklerAdmin() {
 
       if (!response.ok) {
         throw new Error('Dosya yükleme hatası');
+      }      const data = await response.json();
+      
+      // URL'yi temizle ve kontrol et
+      const cleanUrl = data.url ? data.url.trim() : '';
+      if (!cleanUrl) {
+        throw new Error('Geçersiz URL döndü');
       }
-
-      const data = await response.json();
       
       if (type === 'image') {
         setResimler([...resimler, {
-          url: data.url,
-          aciklama: ''
+          url: cleanUrl,
+          aciklama: file.name.split('.')[0] // Dosya adını varsayılan açıklama olarak kullan
         }]);
+        setMessage(`${file.name} başarıyla yüklendi!`);
       } else if (type === 'video') {
         setVideolar([...videolar, {
-          url: data.url,
-          aciklama: ''
+          url: cleanUrl,
+          aciklama: file.name.split('.')[0]
         }]);
+        setMessage(`${file.name} başarıyla yüklendi!`);
       }
 
-      return data.url;
+      return cleanUrl;
     } catch (error) {
       console.error('Dosya yükleme hatası:', error);
-      setError('Dosya yüklenmesi sırasında bir hata oluştu');
+      setError(`${file.name} yüklenemedi: ${error.message}`);
       return null;
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -230,6 +249,86 @@ export default function EtkinliklerAdmin() {
       const updatedVideolar = [...videolar];
       updatedVideolar[index].aciklama = description;
       setVideolar(updatedVideolar);
+    }
+  };  const handleMainImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      setMessage('Ana resim yükleniyor...');
+      setError('');
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Dosya yükleme hatası');
+      }
+
+      const data = await response.json();
+      console.log('Upload response:', data); // DEBUG: API'den dönen yanıtı kontrol edin
+
+      // URL'yi temizle ve kontrol et
+      const cleanUrl = data.url ? data.url.trim() : '';
+      if (cleanUrl) {
+        setEtkinlik((prev) => ({ ...prev, resimUrl: cleanUrl }));
+        setMessage('Ana resim başarıyla yüklendi!');
+      } else {
+        throw new Error('Geçersiz URL döndü');
+      }
+
+      // Input'u temizle
+      if (e.target) {
+        e.target.value = '';
+      }
+
+    } catch (error) {
+      console.error('Ana resim yükleme hatası:', error);
+      setError(`Ana resim yüklenirken bir hata oluştu: ${error.message}`);
+    } finally {
+      setUploading(false);
+    }
+  };
+  // Drag & Drop fonksiyonları
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.target && e.target.classList) {
+      e.target.classList.add(styles.dragOver);
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.target && e.target.classList) {
+      e.target.classList.remove(styles.dragOver);
+    }
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.target && e.target.classList) {
+      e.target.classList.remove(styles.dragOver);
+    }
+    
+    const files = Array.from(e.dataTransfer.files);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    for (const file of imageFiles) {
+      await handleFileUpload(file, 'image');
     }
   };
 
@@ -301,101 +400,179 @@ export default function EtkinliklerAdmin() {
             value={etkinlik.konum}
             onChange={(e) => setEtkinlik({ ...etkinlik, konum: e.target.value })}
           />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="resimUrl">Ana Resim URL</label>
-          <input
-            type="url"
-            id="resimUrl"
-            value={etkinlik.resimUrl}
-            onChange={(e) => setEtkinlik({ ...etkinlik, resimUrl: e.target.value })}
-          />
-        </div>
-
-        <div className={styles.mediaSection}>
-          <h3>Medya Yönetimi</h3>
-          
-          <div className={styles.imageUpload}>
-            <label>
-              Resimler:
+        </div>        <div className={styles.formGroup}>
+          <label htmlFor="resimUrl">Ana Resim</label>
+          <div className={styles.mainImageUpload}>
+            {/* Sadece dosya yükleme, manuel URL girişi yok */}
+            <div className={styles.imageUploadOptions}>
               <input
                 type="file"
                 accept="image/*"
-                multiple
-                onChange={handleImageUpload}
+                onChange={handleMainImageUpload}
                 className={styles.fileInput}
+                id="mainImageFile"
+                disabled={uploading}
               />
-            </label>
-            
-            <div className={styles.mediaPreview}>
+              <label htmlFor="mainImageFile" className={styles.uploadButton}>
+                {uploading ? '⏳ Yükleniyor...' : '📁 Dosya Seç'}
+              </label>
+            </div>
+            {etkinlik.resimUrl && etkinlik.resimUrl.trim() && (
+              <div className={styles.mainImagePreview}>
+                <Image
+                  src={etkinlik.resimUrl.startsWith('/') ? etkinlik.resimUrl : '/' + etkinlik.resimUrl}
+                  alt="Ana resim önizleme"
+                  width={200}
+                  height={150}
+                  unoptimized
+                  style={{ objectFit: 'cover' }}
+                  className={styles.previewImage}
+                  onError={(e) => {
+                    console.error('Main image load error:', e);
+                    setError(`Ana resim yüklenemedi. URL: ${etkinlik.resimUrl}`);
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setEtkinlik({ ...etkinlik, resimUrl: '' })}
+                  className={styles.removeMainImage}
+                >
+                  ❌
+                </button>
+              </div>
+            )}
+            {/* Debug: URL durumunu göster */}
+            {etkinlik.resimUrl && (
+              <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+                <strong>Mevcut URL:</strong> {etkinlik.resimUrl}
+              </div>
+            )}
+          </div>
+        </div>        <div className={styles.mediaSection}>
+          <h3>Medya Yönetimi</h3>
+          
+          <div className={styles.mediaUpload}>
+            <div className={styles.uploadArea}>
+              <h4>📸 Galeri Resimleri</h4>
+              <div 
+                className={`${styles.dropZone} ${uploading ? styles.uploading : ''}`}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+              >                <div className={styles.dropContent}>
+                  {uploading ? (
+                    <>
+                      <div className={styles.loadingSpinner}></div>
+                      <p>📤 Dosyalar yükleniyor...</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>🎯 Resimleri buraya sürükleyip bırakın</p>
+                      <span>veya</span>
+                      <label className={styles.uploadButton}>
+                        📁 Dosyaları Seçin
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleImageUpload}
+                          className={styles.fileInput}
+                          disabled={uploading}
+                        />
+                      </label>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+              <div className={styles.mediaPreview}>
               {resimler.map((resim, index) => (
-                <div key={index} className={styles.mediaItem}>
-                  <Image
-                    src={resim.url}
-                    alt={resim.aciklama || `Resim ${index + 1}`}
-                    width={100}
-                    height={100}
-                    objectFit="cover"
-                  />
+                <div key={`image-${index}-${resim.url}`} className={styles.mediaItem}>
+                  <div className={styles.imageContainer}>                    {resim.url && resim.url.trim() && (
+                      <Image
+                        src={resim.url.trim()}
+                        alt={resim.aciklama || `Resim ${index + 1}`}
+                        width={150}
+                        height={120}
+                        style={{ objectFit: 'cover' }}
+                        className={styles.mediaImage}
+                        onError={(e) => {
+                          console.error('Image load error:', e);
+                        }}
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeMedia(index, 'image')}
+                      className={styles.removeButton}
+                    >
+                      ❌
+                    </button>
+                  </div>
                   <input
                     type="text"
                     value={resim.aciklama || ''}
                     onChange={(e) => updateMediaDescription(index, e.target.value, 'image')}
                     placeholder="Resim açıklaması"
+                    className={styles.mediaDescription}
                   />
-                  <button
-                    type="button"
-                    onClick={() => removeMedia(index, 'image')}
-                    className={styles.removeButton}
-                  >
-                    Kaldır
-                  </button>
                 </div>
               ))}
             </div>
-          </div>
-
-          <div className={styles.videoUpload}>
-            <label>
-              Videolar:
-              <input
-                type="file"
-                accept="video/*"
-                multiple
-                onChange={handleVideoUpload}
-                className={styles.fileInput}
-              />
-            </label>
-            
-            <div className={styles.mediaPreview}>
+          </div>          <div className={styles.videoUpload}>
+            <div className={styles.uploadArea}>
+              <h4>🎬 Galeri Videoları</h4>              <label className={`${styles.uploadButton} ${uploading ? styles.uploading : ''}`}>
+                {uploading ? '⏳ Yükleniyor...' : '📁 Video Dosyaları Seçin'}
+                <input
+                  type="file"
+                  accept="video/*"
+                  multiple
+                  onChange={handleVideoUpload}
+                  className={styles.fileInput}
+                  disabled={uploading}
+                />
+              </label>
+            </div>
+              <div className={styles.mediaPreview}>
               {videolar.map((video, index) => (
-                <div key={index} className={styles.mediaItem}>
-                  <video width="200" controls>
-                    <source src={video.url} type="video/mp4" />
-                    Tarayıcınız video elementini desteklemiyor.
-                  </video>
+                <div key={`video-${index}-${video.url}`} className={styles.mediaItem}>
+                  <div className={styles.videoContainer}>                    {video.url && video.url.trim() && (
+                      <video 
+                        width="150" 
+                        height="120" 
+                        controls
+                        className={styles.mediaVideo}
+                        onError={(e) => {
+                          console.error('Video load error:', e);
+                        }}
+                      >
+                        <source src={video.url.trim()} type="video/mp4" />
+                        Tarayıcınız video elementini desteklemiyor.
+                      </video>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeMedia(index, 'video')}
+                      className={styles.removeButton}
+                    >
+                      ❌
+                    </button>
+                  </div>
                   <input
                     type="text"
                     value={video.aciklama || ''}
                     onChange={(e) => updateMediaDescription(index, e.target.value, 'video')}
                     placeholder="Video açıklaması"
+                    className={styles.mediaDescription}
                   />
-                  <button
-                    type="button"
-                    onClick={() => removeMedia(index, 'video')}
-                    className={styles.removeButton}
-                  >
-                    Kaldır
-                  </button>
                 </div>
               ))}
             </div>
           </div>
         </div>
-        
-        <button type="submit" className={styles.submitButton}>
-          {editMode ? 'Etkinliği Güncelle' : 'Etkinliği Oluştur'}
+          <button type="submit" className={styles.submitButton} disabled={formSubmitting || uploading}>
+          {formSubmitting ? '⏳ İşleniyor...' : (editMode ? 'Etkinliği Güncelle' : 'Etkinliği Oluştur')}
         </button>
       </form>      <div className={styles.eventList}>
         <h2>Mevcut Etkinlikler</h2>
@@ -405,14 +582,17 @@ export default function EtkinliklerAdmin() {
           <div className={styles.events}>
             {etkinlikler.map((item) => (
               <div key={item.id} className={styles.eventItem}>
-                <div className={styles.eventImageContainer}>
-                  {item.resimUrl ? (
+                <div className={styles.eventImageContainer}>                  {item.resimUrl && item.resimUrl.trim() ? (
                     <Image
-                      src={item.resimUrl}
+                      src={item.resimUrl.trim()}
                       alt={item.baslik}
                       width={200}
                       height={120}
+                      style={{ objectFit: 'cover' }}
                       className={styles.eventImage}
+                      onError={(e) => {
+                        console.error('Event image load error:', e);
+                      }}
                     />
                   ) : (
                     <div className={styles.noImage}>Resim Yok</div>

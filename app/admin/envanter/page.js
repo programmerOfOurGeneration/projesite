@@ -127,12 +127,21 @@ export default function AdminEnvanterPage() {
 
   const handleDelete = async (id) => {
     if (!confirm('Bu item\'ı silmek istediğinizden emin misiniz?')) return;
-    
     try {
-      // API çağrısı burada yapılacak
-      alert('Silme işlemi henüz implement edilmedi');
+      const response = await fetch(`/api/envanter?id=${id}`, {
+        method: 'DELETE',
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        // Başarıyla silindi, UI'dan çıkar
+        setEnvanterItems(prev => prev.filter(item => item.id !== id));
+        alert('Ekipman başarıyla silindi!');
+      } else {
+        alert('Silme hatası: ' + (result.error || 'Bilinmeyen hata'));
+      }
     } catch (error) {
       console.error('Silme hatası:', error);
+      alert('Silme işlemi sırasında bir hata oluştu!');
     }
   };
 

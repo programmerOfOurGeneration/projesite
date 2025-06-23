@@ -14,14 +14,13 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
-
   // Oturum durumunu kontrol et
   useEffect(() => {
     if (session) {
       if (session.user.isAdmin) {
         router.replace('/admin');
       } else {
-        router.replace('/sohbet');
+        router.replace('/');
       }
     }
   }, [session, router]);

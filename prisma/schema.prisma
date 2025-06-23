@@ -185,3 +185,22 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Envanter {
+  id           Int      @id @default(autoincrement())
+  name         String
+  category     String
+  quantity     Int
+  available    Int
+  condition    String
+  price        Float
+  description  String
+  image        String?
+  lastUsed     DateTime?
+  location     String?
+  serialNumber String?
+  purchaseDate DateTime?
+  warranty     DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

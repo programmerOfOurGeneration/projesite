@@ -4,7 +4,6 @@ import { signIn, useSession } from 'next-auth/react';
 import styles from './page.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,14 +12,13 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
-
   // Oturum durumunu kontrol et
   useEffect(() => {
     if (session) {
       if (session.user.isAdmin) {
         router.replace('/admin');
       } else {
-        router.replace('/sohbet');
+        router.replace('/');
       }
     }
   }, [session, router]);
@@ -64,10 +62,6 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleGoogleSignIn = () => {
-    signIn('google');  // Yönlendirmeyi middleware ve session callback'ler halledecek
   };
 
   // Yükleme durumunda veya oturum açıkken loading göster
@@ -129,29 +123,6 @@ export default function LoginPage() {
             <button type="submit" className={styles.loginButton} disabled={isLoading}>
               {isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
             </button>
-
-            <div className={styles.divider}>
-              <span>veya</span>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              className={styles.googleButton}
-              disabled={isLoading}
-            >
-              <Image 
-                src="/google.svg" 
-                alt="Google" 
-                width={20} 
-                height={20} 
-              />
-              Google ile Giriş Yap
-            </button>
-
-            <div className={styles.registerLink}>
-              Hesabınız yok mu? <Link href="/register">Kayıt Olun</Link>
-            </div>
           </form>
         </div>
       </div>

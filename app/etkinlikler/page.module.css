@@ -1,7 +1,8 @@
 .container {
-  padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 32px 16px;
+  background: #f8f9fa;
 }
 
 .container h1 {
@@ -13,70 +14,71 @@
 
 .eventGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+  margin-top: 32px;
 }
 
 .eventCard {
-  background: white;
-  border-radius: 12px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px #0001;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
   text-decoration: none;
   color: inherit;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
   display: flex;
   flex-direction: column;
+  min-height: 420px;
 }
 
 .eventCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 8px 32px #0002;
 }
 
 .imageContainer {
   width: 100%;
-  height: 220px;
-  position: relative;
-  background: #f8fafc;
+  height: 200px;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .eventImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-bottom: 1px solid #eee;
 }
 
 .noImage {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e2e8f0;
-  color: #94a3b8;
-  font-size: 0.9rem;
+  color: #aaa;
+  font-size: 1.1em;
 }
 
 .cardContent {
-  padding: 1.5rem;
+  padding: 20px 18px 16px 18px;
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
 .cardContent h2 {
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
-  color: #1a202c;
-  line-height: 1.3;
+  font-size: 1.3em;
+  margin: 0 0 8px 0;
+  font-weight: 700;
 }
 
 .description {
-  color: #4a5568;
-  margin: 0 0 1.5rem 0;
-  line-height: 1.6;
+  color: #444;
+  font-size: 1em;
+  margin-bottom: 12px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -84,37 +86,42 @@
 }
 
 .eventDetails {
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid #e2e8f0;
-  font-size: 0.9rem;
-  color: #718096;
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.98em;
+  color: #666;
+  margin-bottom: 10px;
 }
 
 .location {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 4px;
 }
 
 .icon {
-  width: 1em;
-  height: 1em;
+  width: 18px;
+  height: 18px;
+  color: #0070f3;
 }
 
 .readMore {
+  margin-top: auto;
   display: inline-block;
-  margin-top: 1rem;
-  color: #3182ce;
+  background: #0070f3;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 8px;
   font-weight: 500;
-  transition: color 0.2s;
+  font-size: 1em;
+  text-align: center;
+  transition: background 0.15s;
+  cursor: pointer;
 }
 
-.eventCard:hover .readMore {
-  color: #2c5282;
+.readMore:hover {
+  background: #005bb5;
 }
 
 @media (max-width: 768px) {

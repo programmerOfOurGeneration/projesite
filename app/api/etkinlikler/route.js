@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '../../../lib/prisma';
 
 export async function GET() {
   try {
@@ -57,7 +55,10 @@ export async function POST(request) {
 }
 
 export async function PUT(request, { params }) {
-  const session = await getServerSession();
+  const { getServerSession } = await import('next-auth/next');
+  const { authOptions } = await import('../auth/[...nextauth]/route');
+  
+  const session = await getServerSession(authOptions);
   
   if (!session) {
     return NextResponse.json({ error: 'Yetkilendirme gerekli' }, { status: 401 });

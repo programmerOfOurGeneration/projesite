@@ -16,120 +16,14 @@ export default function EnvanterPage() {
 
   const categories = [
     { value: 'all', label: 'Tümü' },
-    { value: 'sahne', label: 'Sahne Ekipmanları' },
-    { value: 'isik', label: 'Işık Sistemleri' },
+    { value: 'sahne', label: 'Sahne Ekipmanları' },    { value: 'isik', label: 'Işık Sistemleri' },
     { value: 'ses', label: 'Ses Sistemleri' },
     { value: 'kamera', label: 'Kamera & Video' },
     { value: 'aksesuar', label: 'Aksesuarlar' },
     { value: 'diger', label: 'Diğer' }
   ];
-  // Mock data - gerçek uygulamada API'den gelecek
-  const mockEnvanter = [
-    {
-      id: 1,
-      name: 'Professional LED Panel 1000W',
-      category: 'isik',
-      quantity: 12,
-      available: 8,
-      condition: 'excellent',
-      price: 15000,
-      description: 'Yüksek kaliteli LED panel ışık sistemi - RGB renk desteği',
-      image: '/light.svg',
-      lastUsed: '2024-06-15',
-      location: 'Depo A - Raf 3'
-    },
-    {
-      id: 2,
-      name: 'Wireless Mikrofon Seti',
-      category: 'ses',
-      quantity: 20,
-      available: 15,
-      condition: 'good',
-      price: 8000,
-      description: 'Profesyonel kablosuz mikrofon sistemi - UHF band',
-      image: '/sound.svg',
-      lastUsed: '2024-06-10',
-      location: 'Depo B - Dolap 1'
-    },
-    {
-      id: 3,
-      name: 'Sahne Reflektörü 500W',
-      category: 'isik',
-      quantity: 25,
-      available: 20,
-      condition: 'excellent',
-      price: 5500,
-      description: 'Ayarlanabilir sahne reflektörü - Halogen lamba',
-      image: '/light.svg',
-      lastUsed: '2024-06-12',
-      location: 'Depo A - Raf 1'
-    },
-    {
-      id: 4,
-      name: 'PA Sistem 2000W',
-      category: 'ses',
-      quantity: 8,
-      available: 6,
-      condition: 'good',
-      price: 25000,
-      description: 'Güçlü PA ses sistemi - 2x1000W aktif hoparlör',
-      image: '/sound.svg',
-      lastUsed: '2024-06-08',
-      location: 'Depo C - Alan 1'
-    },
-    {
-      id: 5,
-      name: 'Profesyonel Video Kamera',
-      category: 'kamera',
-      quantity: 6,
-      available: 4,
-      condition: 'excellent',
-      price: 45000,
-      description: '4K video kayıt kamerası - Optik zoom lens',
-      image: '/stage.svg',
-      lastUsed: '2024-06-14',
-      location: 'Güvenlik Dolabı'
-    },
-    {
-      id: 6,
-      name: 'Sahne Dekoru Paneli',
-      category: 'sahne',
-      quantity: 50,
-      available: 35,
-      condition: 'good',
-      price: 1200,
-      description: 'Modüler sahne dekor paneli - Alüminyum çerçeve',
-      image: '/stage.svg',
-      lastUsed: '2024-06-09',
-      location: 'Depo D - Yığın 1'
-    },
-    {
-      id: 7,
-      name: 'DMX Işık Kontrol Konsolu',
-      category: 'isik',
-      quantity: 3,
-      available: 2,
-      condition: 'excellent',
-      price: 35000,
-      description: 'Profesyonel DMX512 ışık kontrol konsolu - 48 kanal',
-      image: '/light.svg',
-      lastUsed: '2024-06-11',
-      location: 'Teknik Oda'
-    },
-    {
-      id: 8,
-      name: 'Fog Machine',
-      category: 'aksesuar',
-      quantity: 4,
-      available: 3,
-      condition: 'good',
-      price: 8500,
-      description: 'Profesyonel sis makinesi - DMX kontrollü',
-      image: '/stage.svg',
-      lastUsed: '2024-06-13',
-      location: 'Depo A - Raf 2'
-    }
-  ];  useEffect(() => {
+
+  useEffect(() => {
     const fetchEnvanter = async () => {
       try {
         setIsLoading(true);
@@ -222,12 +116,7 @@ export default function EnvanterPage() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>Envanter</h1>
-        {session?.user?.isAdmin && (
-          <Link href="/admin/envanter/add" className={styles.addButton}>
-            + Yeni Ekipman
-          </Link>
-        )}
-      </div>      {/* Gelişmiş Filtreler */}
+      </div>{/* Gelişmiş Filtreler */}
       <div className={styles.searchSection}>
         <div className={styles.searchRow}>
           <input
@@ -372,25 +261,10 @@ export default function EnvanterPage() {
                     )}
                   </div>
                 )}
-                
-                {viewMode === 'grid' && (
-                  <div className={styles.itemFooter}>
-                    <p className={styles.location}>📍 {item.location}</p>
+                  {viewMode === 'grid' && (                  <div className={styles.itemFooter}>
                     <p className={styles.lastUsed}>🕒 {new Date(item.lastUsed).toLocaleDateString('tr-TR')}</p>
-                  </div>
-                )}
+                  </div>)}
               </div>
-              
-              {session?.user?.isAdmin && (
-                <div className={styles.actions}>
-                  <button className={styles.editBtn}>
-                    {viewMode === 'grid' ? '✏️' : 'Düzenle'}
-                  </button>
-                  {viewMode === 'grid' && (
-                    <button className={styles.useBtn}>Kullan</button>
-                  )}
-                </div>
-              )}
             </div>
           ))
         )}
