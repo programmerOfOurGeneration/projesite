@@ -11,6 +11,11 @@ export default function BlogPost() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [readingTime, setReadingTime] = useState(0);
+  const [imageErrors, setImageErrors] = useState({});
+
+  const handleImageError = (imageUrl) => {
+    setImageErrors(prev => ({ ...prev, [imageUrl]: true }))
+  }
 
   // Scroll progress hesaplama
   useEffect(() => {
@@ -105,9 +110,7 @@ export default function BlogPost() {
             )}
           </div>
           <h1 className={styles.title}>{etkinlik.baslik}</h1>
-        </header>
-
-        {etkinlik.resimUrl && (
+        </header>        {etkinlik.resimUrl && !imageErrors[etkinlik.resimUrl] && (
           <div className={styles.featuredImage}>
             <Image
               src={etkinlik.resimUrl}
@@ -116,9 +119,25 @@ export default function BlogPost() {
               height={600}
               className={styles.mainImage}
               priority
+              onError={() => handleImageError(etkinlik.resimUrl)}
             />
           </div>
-        )}        <div className={styles.content}>
+        )}
+
+        {(!etkinlik.resimUrl || imageErrors[etkinlik.resimUrl]) && (
+          <div className={styles.featuredImage}>
+            <div className={styles.defaultImageContainer}>
+              <Image
+                src="/stage-hero.jpg"
+                alt={etkinlik.baslik}
+                width={1200}
+                height={600}
+                className={styles.mainImage}
+                priority
+              />
+            </div>
+          </div>
+        )}<div className={styles.content}>
           <div className={styles.summary}>
             {etkinlik.aciklama}
           </div>

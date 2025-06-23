@@ -6,6 +6,11 @@ import Link from 'next/link'
 
 export default function EventsPage() {
   const [events, setEvents] = useState([])
+  const [imageErrors, setImageErrors] = useState({})
+
+  const handleImageError = (eventId) => {
+    setImageErrors(prev => ({ ...prev, [eventId]: true }))
+  }
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -25,18 +30,26 @@ export default function EventsPage() {
     <div className={styles.container}>
       <h1>Etkinliklerimiz</h1>      <div className={styles.eventGrid}>
         {events.map((event) => (
-          <Link href={`/blog/${event.id}`} key={event.id} className={styles.eventCard}>
-            <div className={styles.imageContainer}>
-              {event.resimUrl ? (
+          <Link href={`/blog/${event.id}`} key={event.id} className={styles.eventCard}>            <div className={styles.imageContainer}>
+              {event.resimUrl && !imageErrors[event.id] ? (
                 <Image
                   src={event.resimUrl}
                   alt={event.baslik}
                   width={300}
                   height={200}
                   className={styles.eventImage}
+                  onError={() => handleImageError(event.id)}
                 />
               ) : (
-                <div className={styles.noImage}>Resim Yok</div>
+                <div className={styles.noImage}>
+                  <Image
+                    src="/stage.svg"
+                    alt="Etkinlik"
+                    width={100}
+                    height={100}
+                    className={styles.defaultImage}
+                  />
+                </div>
               )}
             </div>
             <div className={styles.cardContent}>

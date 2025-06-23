@@ -11,6 +11,7 @@ export default function Home() {
   const [projeler, setProjeler] = useState([]);
   const [tumProjeler, setTumProjeler] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [imageErrors, setImageErrors] = useState({});
   const [icerik, setIcerik] = useState({
     heroBaslik: "Hayallerinizi Sahneliyoruz",
     heroAltBaslik: "Profesyonel sahne tasarımı ve teknik prodüksiyon hizmetleri",
@@ -45,7 +46,11 @@ export default function Home() {
         aciklama: "Yıllık Deneyim"
       }
     ]
-  });  // Projeler verilerini çek
+  });  const handleImageError = (projeId) => {
+    setImageErrors(prev => ({ ...prev, [projeId]: true }))
+  }
+
+  // Projeler verilerini çek
   useEffect(() => {
     const fetchProjeler = async () => {
       try {
@@ -273,15 +278,15 @@ export default function Home() {
               <div className={styles.projectGrid}>
                 {tumProjeler.map((proje, index) => (
                   proje && proje.id ? (
-                    <Link href={`/blog/${proje.id}`} key={`project-${proje.id}-${index}`} className={styles.projectCard}>
-                      <div className={styles.projectImage}>
-                        {proje.resimUrl ? (
+                    <Link href={`/blog/${proje.id}`} key={`project-${proje.id}-${index}`} className={styles.projectCard}>                      <div className={styles.projectImage}>
+                        {proje.resimUrl && !imageErrors[proje.id] ? (
                           <Image
                             src={proje.resimUrl}
                             alt={proje.baslik || 'Proje'}
                             width={300}
                             height={200}
                             className={styles.projectImg}
+                            onError={() => handleImageError(proje.id)}
                           />
                         ) : (
                           <div className={styles.noImage}>
