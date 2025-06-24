@@ -25,11 +25,11 @@ export default function AdminEnvanterPage() {
     { value: 'aksesuar', label: 'Aksesuarlar' },
     { value: 'diger', label: 'Diğer' }
   ];
-
   const [formData, setFormData] = useState({
     name: '',
     category: 'sahne',
     quantity: 1,
+    available: 1,
     price: 0,
     description: '',
     location: '',
@@ -37,6 +37,16 @@ export default function AdminEnvanterPage() {
     serialNumber: '',
     warranty: ''
   });
+
+  // Quantity değiştiğinde available'ı senkronize et
+  useEffect(() => {
+    if (!editingItem && formData.quantity > 0 && formData.available === 0) {
+      setFormData(prev => ({
+        ...prev,
+        available: prev.quantity
+      }));
+    }
+  }, [formData.quantity, editingItem]);
 
   // Admin kontrolü
   useEffect(() => {
@@ -72,21 +82,21 @@ export default function AdminEnvanterPage() {
     if (session?.user?.isAdmin) {
       fetchEnvanter();
     }
-  }, [searchTerm, selectedCategory, session]);
-
-  const handleInputChange = (e) => {
+  }, [searchTerm, selectedCategory, session]);  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/envanter', {
-        method: 'POST',
+      const method = editingItem ? 'PUT' : 'POST';
+      const url = editingItem ? `/api/envanter?id=${editingItem.id}` : '/api/envanter';
+      
+      const response = await fetch(url, {
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -97,13 +107,13 @@ export default function AdminEnvanterPage() {
 
       if (response.ok && result.success) {
         // Başarı mesajı
-        alert('Envanter item başarıyla eklendi!');
-        
-        // Formu sıfırla
+        alert(editingItem ? 'Envanter item başarıyla güncellendi!' : 'Envanter item başarıyla eklendi!');
+          // Formu sıfırla
         setFormData({
           name: '',
           category: 'sahne',
           quantity: 1,
+          available: 1,
           price: 0,
           description: '',
           location: '',
@@ -113,6 +123,7 @@ export default function AdminEnvanterPage() {
         });
         
         setShowAddForm(false);
+        setEditingItem(null);
         
         // Listeyi yenile
         window.location.reload();
@@ -146,11 +157,11 @@ export default function AdminEnvanterPage() {
   };
 
   const handleEdit = (item) => {
-    setEditingItem(item);
-    setFormData({
+    setEditingItem(item);    setFormData({
       name: item.name,
       category: item.category,
       quantity: item.quantity,
+      available: item.available,
       price: item.price,
       description: item.description,
       location: item.location,
@@ -218,27 +229,37 @@ export default function AdminEnvanterPage() {
                     <option key={cat.value} value={cat.value}>{cat.label}</option>
                   ))}
                 </select>
-              </div>
-              
-              <div className={styles.formGroup}>
+              </div>                <div className={styles.formGroup}>
                 <label>Miktar *</label>
                 <input
                   type="number"
                   name="quantity"
                   value={formData.quantity}
                   onChange={handleInputChange}
+                  onFocus={(e) => e.target.select()}
                   min="1"
                   required
                 />
+              </div>                <div className={styles.formGroup}>
+                <label>Müsait Miktar *</label>
+                <input
+                  type="number"
+                  name="available"
+                  value={formData.available}
+                  onChange={handleInputChange}
+                  onFocus={(e) => e.target.select()}
+                  min="0"
+                  required
+                />
               </div>
-              
-              <div className={styles.formGroup}>
+                <div className={styles.formGroup}>
                 <label>Fiyat (₺) *</label>
                 <input
                   type="number"
                   name="price"
                   value={formData.price}
                   onChange={handleInputChange}
+                  onFocus={(e) => e.target.select()}
                   min="0"
                   step="0.01"
                   required

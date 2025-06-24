@@ -86,13 +86,12 @@ export async function POST(request) {
       if (!data[field]) {
         return NextResponse.json({ error: `${field} alanı zorunludur` }, { status: 400 });
       }
-    }
-    const newItem = await prisma.envanter.create({
+    }    const newItem = await prisma.envanter.create({
       data: {
         name: data.name,
         category: data.category,
         quantity: parseInt(data.quantity),
-        available: parseInt(data.quantity),
+        available: parseInt(data.available || data.quantity),
         condition: data.condition || 'excellent',
         price: parseFloat(data.price),
         description: data.description,
@@ -108,6 +107,51 @@ export async function POST(request) {
   } catch (error) {
     console.error('Envanter ekleme hatası:', error);
     return NextResponse.json({ error: 'Envanter item eklenemedi' }, { status: 500 });
+  }
+}
+
+// Envanter item güncelleme (Admin only)
+export async function PUT(request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
+      return NextResponse.json({ error: 'Bu işlem için admin yetkisi gereklidir' }, { status: 403 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = parseInt(searchParams.get('id'));
+    if (!id) {
+      return NextResponse.json({ error: 'Geçersiz veya eksik ID' }, { status: 400 });
+    }
+
+    const data = await request.json();
+    const requiredFields = ['name', 'category', 'quantity', 'price', 'description', 'location'];
+    for (const field of requiredFields) {
+      if (!data[field]) {
+        return NextResponse.json({ error: `${field} alanı zorunludur` }, { status: 400 });
+      }
+    }
+
+    const updatedItem = await prisma.envanter.update({
+      where: { id },
+      data: {
+        name: data.name,
+        category: data.category,
+        quantity: parseInt(data.quantity),
+        available: parseInt(data.available || data.quantity),
+        condition: data.condition || 'excellent',
+        price: parseFloat(data.price),
+        description: data.description,
+        location: data.location,
+        serialNumber: data.serialNumber,
+        warranty: data.warranty ? new Date(data.warranty) : null
+      }
+    });
+
+    return NextResponse.json({ success: true, data: updatedItem, message: 'Envanter item başarıyla güncellendi' });
+  } catch (error) {
+    console.error('Envanter güncelleme hatası:', error);
+    return NextResponse.json({ error: 'Envanter item güncellenemedi' }, { status: 500 });
   }
 }
 
